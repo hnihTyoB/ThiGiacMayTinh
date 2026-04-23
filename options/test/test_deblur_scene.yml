@@ -1,0 +1,48 @@
+# ---------------------------------------------------------------------------- #
+# Test config: Scene Deblurring with SwinIR
+# ---------------------------------------------------------------------------- #
+name: TestDeblurScene_SwinIR
+model_type: SRModel
+scale: 1
+num_gpu: 1
+manual_seed: 42
+
+datasets:
+  test:
+    name: SceneDeblur_test
+    type: PairedImageDataset
+    dataroot_gt: datasets/scene/test/sharp
+    dataroot_lq: datasets/scene/test/blur
+    io_backend:
+      type: disk
+
+network_g:
+  type: SwinIR
+  upscale: 1
+  in_chans: 3
+  img_size: 256
+  window_size: 8
+  img_range: 1.
+  depths: [6, 6, 6, 6, 6, 6]
+  embed_dim: 180
+  num_heads: [6, 6, 6, 6, 6, 6]
+  mlp_ratio: 4
+  upsampler: ''
+  resi_connection: '1conv'
+
+path:
+  pretrain_network_g: experiments/DeblurScene_SwinIR/models/net_g_latest.pth
+  strict_load_g: true
+
+val:
+  save_img: true
+  suffix: ~
+  metrics:
+    psnr:
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: false
+    ssim:
+      type: calculate_ssim
+      crop_border: 0
+      test_y_channel: false
