@@ -152,52 +152,65 @@ def setup_scene_dataset(data_root='datasets', download_dir='downloads', use_gdri
         os.makedirs(osp.join(scene_dir, split, 'blur'), exist_ok=True)
         os.makedirs(osp.join(scene_dir, split, 'sharp'), exist_ok=True)
 
-    # GoPro chỉ có train và test, ta dùng test làm val+test
+    # Tìm thư mục train và test thực sự sau khi giải nén
+    search_dirs = [
+        osp.join(download_dir, 'GOPRO_Large'),
+        osp.join(download_dir, 'GOPRO_Large', 'GOPRO_Large'),
+        download_dir
+    ]
+    train_dir = None
+    test_dir = None
+    for d in search_dirs:
+        if osp.exists(osp.join(d, 'train')) and osp.exists(osp.join(d, 'test')):
+            train_dir = osp.join(d, 'train')
+            test_dir = osp.join(d, 'test')
+            break
+
+    if train_dir is None or test_dir is None:
+        print(f'  [!] Lỗi: Không tìm thấy thư mục train/test trong {download_dir}.')
+        return
+
     print('\n  Đang sắp xếp ảnh...')
 
     # Copy train images
-    train_dir = osp.join(gopro_dir, 'train')
-    if osp.exists(train_dir):
-        count = 0
-        for scene_folder in sorted(os.listdir(train_dir)):
-            scene_path = osp.join(train_dir, scene_folder)
-            if not osp.isdir(scene_path):
-                continue
+    count = 0
+    for scene_folder in sorted(os.listdir(train_dir)):
+        scene_path = osp.join(train_dir, scene_folder)
+        if not osp.isdir(scene_path):
+            continue
 
+        blur_images = collect_images(osp.join(scene_path, 'blur'))
+        sharp_images = collect_images(osp.join(scene_path, 'sharp'))
+
+        for blur_img, sharp_img in zip(blur_images, sharp_images):
+            blur_name = f'{scene_folder}_{osp.basename(blur_img)}'
+            sharp_name = f'{scene_folder}_{osp.basename(sharp_img)}'
+            shutil.copy2(blur_img, osp.join(scene_dir, 'train', 'blur', blur_name))
+            shutil.copy2(sharp_img, osp.join(scene_dir, 'train', 'sharp', sharp_name))
+            count += 1
+
+    print(f'  [✓] Train: {count} pairs')
+
+    # Copy test images (chia 50/50 cho val và test)
+    all_test_scenes = sorted([d for d in os.listdir(test_dir) if osp.isdir(osp.join(test_dir, d))])
+    mid = len(all_test_scenes) // 2
+    val_scenes = all_test_scenes[:mid]
+    test_scenes = all_test_scenes[mid:]
+
+    for split_name, scenes in [('val', val_scenes), ('test', test_scenes)]:
+        count = 0
+        for scene_folder in scenes:
+            scene_path = osp.join(test_dir, scene_folder)
             blur_images = collect_images(osp.join(scene_path, 'blur'))
             sharp_images = collect_images(osp.join(scene_path, 'sharp'))
 
             for blur_img, sharp_img in zip(blur_images, sharp_images):
                 blur_name = f'{scene_folder}_{osp.basename(blur_img)}'
                 sharp_name = f'{scene_folder}_{osp.basename(sharp_img)}'
-                shutil.copy2(blur_img, osp.join(scene_dir, 'train', 'blur', blur_name))
-                shutil.copy2(sharp_img, osp.join(scene_dir, 'train', 'sharp', sharp_name))
+                shutil.copy2(blur_img, osp.join(scene_dir, split_name, 'blur', blur_name))
+                shutil.copy2(sharp_img, osp.join(scene_dir, split_name, 'sharp', sharp_name))
                 count += 1
-
-        print(f'  [✓] Train: {count} pairs')
-
-    # Copy test images (chia 50/50 cho val và test)
-    test_dir = osp.join(gopro_dir, 'test')
-    if osp.exists(test_dir):
-        all_test_scenes = sorted([d for d in os.listdir(test_dir) if osp.isdir(osp.join(test_dir, d))])
-        mid = len(all_test_scenes) // 2
-        val_scenes = all_test_scenes[:mid]
-        test_scenes = all_test_scenes[mid:]
-
-        for split_name, scenes in [('val', val_scenes), ('test', test_scenes)]:
-            count = 0
-            for scene_folder in scenes:
-                scene_path = osp.join(test_dir, scene_folder)
-                blur_images = collect_images(osp.join(scene_path, 'blur'))
-                sharp_images = collect_images(osp.join(scene_path, 'sharp'))
-
-                for blur_img, sharp_img in zip(blur_images, sharp_images):
-                    blur_name = f'{scene_folder}_{osp.basename(blur_img)}'
-                    sharp_name = f'{scene_folder}_{osp.basename(sharp_img)}'
-                    shutil.copy2(blur_img, osp.join(scene_dir, split_name, 'blur', blur_name))
-                    shutil.copy2(sharp_img, osp.join(scene_dir, split_name, 'sharp', sharp_name))
-                    count += 1
-            print(f'  [✓] {split_name.capitalize()}: {count} pairs')
+        print(f'  [✓] {split_name.capitalize()}: {count} pairs')
 
     print(f'\n  [✓] Scene dataset sẵn sàng tại: {scene_dir}')
 
