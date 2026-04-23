@@ -18,13 +18,13 @@ datasets:
     io_backend:
       type: disk
 
-    gt_size: 256
+    gt_size: 128
     use_hflip: true
     use_rot: false  # Không rotate ID card vì text sẽ bị lộn
 
     # Data loader
-    num_worker_per_gpu: 4
-    batch_size_per_gpu: 8
+    num_worker_per_gpu: 2
+    batch_size_per_gpu: 4
     dataset_enlarge_ratio: 1
     prefetch_mode: ~
 
@@ -41,7 +41,7 @@ network_g:
   type: SwinIR
   upscale: 1
   in_chans: 3
-  img_size: 256
+  img_size: 128
   window_size: 8
   img_range: 1.
   depths: [6, 6, 6, 6]
