@@ -18,7 +18,7 @@ datasets:
     io_backend:
       type: disk
 
-    gt_size: 256
+    gt_size: 128
     use_hflip: true
     use_rot: true
 
@@ -41,7 +41,7 @@ network_g:
   type: SwinIR
   upscale: 1
   in_chans: 3
-  img_size: 256
+  img_size: 128
   window_size: 8
   img_range: 1.
   depths: [6, 6, 6, 6, 6, 6]
