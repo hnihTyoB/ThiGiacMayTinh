@@ -1,6 +1,5 @@
 addict
 future
-lmdb
 numpy>=1.17
 opencv-python
 Pillow
@@ -8,7 +7,7 @@ pyyaml
 requests
 scikit-image
 scipy
-tb-nightly
+tensorboard
 torch>=1.7
 torchvision
 tqdm
