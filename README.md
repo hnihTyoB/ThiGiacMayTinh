@@ -2,7 +2,7 @@
 > Hệ thống khôi phục ảnh mờ (Deblur) cho 3 cấp độ: Mặt người, Cảnh vật và Căn cước công dân (ID Card).
 
 ## 1. Giới thiệu
-Dự án được xây dựng dựa trên framework **BasicSR** và sử dụng kiến trúc mạng **SwinIR** để giải quyết bài toán Image Deblurring. Thay vì sử dụng một model chung cho mọi trường hợp, hệ thống sử dụng 3 mô hình chuyên biệt cho 3 domain khác nhau nhằm đạt hiệu quả tối ưu nhất.
+Dự án sử dụng kiến trúc mạng **SwinIR** (Swin Transformer for Image Restoration) để giải quyết bài toán Image Deblurring. Thay vì sử dụng một model chung cho mọi trường hợp, hệ thống sử dụng 3 mô hình chuyên biệt cho 3 domain khác nhau nhằm đạt hiệu quả tối ưu nhất.
 
 Các cấp độ khôi phục:
 1. **Face (Mặt người)**: Tập trung vào chi tiết da, mắt, tóc.
