@@ -15,8 +15,12 @@ import cv2
 import glob
 import numpy as np
 import os
+import sys
 import torch
 from os import path as osp
+
+# Tự động thêm đường dẫn thư mục cha để nhận diện module basicsr (không cần pip install)
+sys.path.append(osp.abspath(osp.join(osp.dirname(__file__), '..')))
 
 from basicsr.archs.swinir_arch import SwinIR
 

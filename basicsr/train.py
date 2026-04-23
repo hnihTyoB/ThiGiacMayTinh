@@ -3,7 +3,11 @@ import logging
 import math
 import time
 import torch
+import sys
 from os import path as osp
+
+# Tự động thêm đường dẫn thư mục cha để nhận diện module basicsr (không cần pip install)
+sys.path.append(osp.abspath(osp.join(osp.dirname(__file__), '..')))
 
 from basicsr.data import build_dataloader, build_dataset
 from basicsr.data.data_sampler import EnlargedSampler
