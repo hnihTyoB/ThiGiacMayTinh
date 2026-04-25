@@ -34,7 +34,7 @@ MODEL_CONFIGS = {
         num_heads=[6, 6, 6, 6],
     ),
     'scene': dict(
-        img_size=256,
+        img_size=128,
         depths=[6, 6, 6, 6, 6, 6],
         embed_dim=180,
         num_heads=[6, 6, 6, 6, 6, 6],
