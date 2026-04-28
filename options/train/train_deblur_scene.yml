@@ -55,7 +55,7 @@ network_g:
 path:
   pretrain_network_g: ~
   strict_load_g: true
-  resume_state: /content/drive/MyDrive/DeblurModels/DeblurScene_SwinIR/training_states/15000.state
+  resume_state: /content/drive/MyDrive/DeblurModels/DeblurScene_SwinIR/training_states/30000.state
 
 # ============================= Training Settings =========================== #
 train:
