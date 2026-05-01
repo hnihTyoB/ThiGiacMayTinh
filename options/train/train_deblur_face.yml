@@ -28,13 +28,7 @@ datasets:
     dataset_enlarge_ratio: 1
     prefetch_mode: ~
 
-  val:
-    name: FaceDeblur_val
-    type: PairedImageDataset
-    dataroot_gt: datasets/face/val/sharp
-    dataroot_lq: datasets/face/val/blur
-    io_backend:
-      type: disk
+
 
 # ============================== Network (G) ================================ #
 network_g:
