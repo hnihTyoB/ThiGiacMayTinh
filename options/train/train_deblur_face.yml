@@ -2,7 +2,7 @@
 # Training config: Face Deblurring with SwinIR
 # Đồ án Deblur/Unblur ảnh - Cấp độ 1: Mặt người
 # ---------------------------------------------------------------------------- #
-name: DeblurFace_SwinIR
+name: DeblurFace_SwinIR_V2
 model_type: SRModel
 scale: 1  # Deblur: không thay đổi kích thước ảnh
 num_gpu: 1
@@ -49,7 +49,7 @@ network_g:
 path:
   pretrain_network_g: ~
   strict_load_g: true
-  resume_state: /content/drive/MyDrive/DeblurModels/DeblurFace_SwinIR/training_states/50000.state
+  resume_state: ~
 
 # ============================= Training Settings =========================== #
 train:
