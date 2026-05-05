@@ -114,6 +114,14 @@ def inference_single(model, img_path, device='cuda', window_size=8):
         print(f'  [!] Không đọc được ảnh: {img_path}')
         return None
 
+    # CHỐNG TRÀN RAM: Tự động thu nhỏ ảnh nếu quá lớn (Tối đa 800px)
+    max_dim = 800
+    h, w = img.shape[:2]
+    if max(h, w) > max_dim:
+        scale = max_dim / max(h, w)
+        img = cv2.resize(img, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_AREA)
+        print(f'  (Đã tự động thu nhỏ xuống {img.shape[1]}x{img.shape[0]} để chống tràn RAM) ', end='')
+
     img = img.astype(np.float32) / 255.0
     # BGR -> RGB
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
