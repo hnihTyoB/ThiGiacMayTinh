@@ -26,15 +26,12 @@ def apply_gaussian_blur(img, kernel_range=(7, 31)):
 
 
 def apply_motion_blur(img, kernel_range=(10, 30)):
-    """Motion blur theo hướng ngẫu nhiên."""
+    """Motion blur đường thẳng (Linear motion blur)."""
     k = random.randint(kernel_range[0], kernel_range[1])
     angle = random.uniform(0, 360)
 
-    # Tạo motion blur kernel
     kernel = np.zeros((k, k), dtype=np.float32)
     center = k // 2
-
-    # Tính tọa độ đường thẳng
     cos_val = np.cos(np.deg2rad(angle))
     sin_val = np.sin(np.deg2rad(angle))
 
@@ -49,48 +46,97 @@ def apply_motion_blur(img, kernel_range=(10, 30)):
     return cv2.filter2D(img, -1, kernel)
 
 
+def apply_nonlinear_motion_blur(img, max_kernel_size=30):
+    """Mô phỏng rung tay thực tế (Non-linear random walk motion blur)."""
+    k = random.randint(15, max_kernel_size)
+    kernel = np.zeros((k, k), dtype=np.float32)
+    
+    # Bắt đầu từ tâm
+    x, y = k // 2, k // 2
+    kernel[y, x] = 1.0
+    
+    # Bước đi ngẫu nhiên để tạo ra quỹ đạo rung tay zigzag/elip
+    steps = random.randint(k, k * 3)
+    for _ in range(steps):
+        dx = random.choice([-1, 0, 1])
+        dy = random.choice([-1, 0, 1])
+        x = np.clip(x + dx, 0, k - 1)
+        y = np.clip(y + dy, 0, k - 1)
+        kernel[y, x] += 1.0
+        
+    kernel = kernel / kernel.sum() if kernel.sum() > 0 else kernel
+    return cv2.filter2D(img, -1, kernel)
+
+
 def apply_defocus_blur(img, radius_range=(3, 12)):
     """Defocus (out-of-focus) blur."""
     radius = random.randint(radius_range[0], radius_range[1])
     kernel_size = 2 * radius + 1
     kernel = np.zeros((kernel_size, kernel_size), dtype=np.float32)
     cv2.circle(kernel, (radius, radius), radius, 1, -1)
-    kernel = kernel / kernel.sum()
+    kernel = kernel / kernel.sum() if kernel.sum() > 0 else kernel
     return cv2.filter2D(img, -1, kernel)
 
 
+def apply_real_world_corruptions(img):
+    """Thêm nhiễu cảm biến và lỗi nén ảnh để giống ảnh trên mạng."""
+    # 1. Thêm Gaussian Noise (Nhiễu hạt camera)
+    if random.random() > 0.5:
+        mean = 0
+        var = random.uniform(10, 50)
+        sigma = var ** 0.5
+        gaussian = np.random.normal(mean, sigma, img.shape).astype(np.float32)
+        img = cv2.add(img.astype(np.float32), gaussian)
+        img = np.clip(img, 0, 255).astype(np.uint8)
+        
+    # 2. Thêm JPEG Compression Artifacts (Lỗi nén ảnh mạng)
+    if random.random() > 0.5:
+        quality = random.randint(30, 80) # Chất lượng từ 30% đến 80%
+        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), quality]
+        result, encimg = cv2.imencode('.jpg', img, encode_param)
+        img = cv2.imdecode(encimg, 1)
+        
+    return img
+
+
 def create_blur(img, task='face'):
-    """Tạo blur phù hợp với từng task."""
+    """Tạo blur kết hợp corruptions thực tế."""
     if task == 'face':
-        # Mặt người: chủ yếu gaussian và motion blur nhẹ
-        blur_type = random.choice(['gaussian', 'motion', 'defocus'])
+        blur_type = random.choice(['gaussian', 'linear_motion', 'nonlinear_motion', 'defocus'])
         if blur_type == 'gaussian':
-            return apply_gaussian_blur(img, kernel_range=(5, 21))
-        elif blur_type == 'motion':
-            return apply_motion_blur(img, kernel_range=(5, 20))
+            img = apply_gaussian_blur(img, kernel_range=(5, 21))
+        elif blur_type == 'linear_motion':
+            img = apply_motion_blur(img, kernel_range=(5, 20))
+        elif blur_type == 'nonlinear_motion':
+            img = apply_nonlinear_motion_blur(img, max_kernel_size=25)
         else:
-            return apply_defocus_blur(img, radius_range=(2, 8))
+            img = apply_defocus_blur(img, radius_range=(2, 8))
 
     elif task == 'scene':
-        # Cảnh: motion blur mạnh hơn (camera shake)
-        blur_type = random.choice(['gaussian', 'motion', 'motion', 'defocus'])
+        blur_type = random.choice(['gaussian', 'linear_motion', 'nonlinear_motion', 'defocus'])
         if blur_type == 'gaussian':
-            return apply_gaussian_blur(img, kernel_range=(7, 31))
-        elif blur_type == 'motion':
-            return apply_motion_blur(img, kernel_range=(10, 35))
+            img = apply_gaussian_blur(img, kernel_range=(7, 31))
+        elif blur_type == 'linear_motion':
+            img = apply_motion_blur(img, kernel_range=(10, 35))
+        elif blur_type == 'nonlinear_motion':
+            img = apply_nonlinear_motion_blur(img, max_kernel_size=35)
         else:
-            return apply_defocus_blur(img, radius_range=(3, 12))
+            img = apply_defocus_blur(img, radius_range=(3, 12))
 
     elif task == 'idcard':
-        # ID Card: gaussian và motion blur nhẹ-vừa
-        blur_type = random.choice(['gaussian', 'motion', 'defocus'])
+        blur_type = random.choice(['gaussian', 'linear_motion', 'nonlinear_motion', 'defocus'])
         if blur_type == 'gaussian':
-            return apply_gaussian_blur(img, kernel_range=(5, 15))
-        elif blur_type == 'motion':
-            return apply_motion_blur(img, kernel_range=(5, 15))
+            img = apply_gaussian_blur(img, kernel_range=(5, 15))
+        elif blur_type == 'linear_motion':
+            img = apply_motion_blur(img, kernel_range=(5, 15))
+        elif blur_type == 'nonlinear_motion':
+            img = apply_nonlinear_motion_blur(img, max_kernel_size=20)
         else:
-            return apply_defocus_blur(img, radius_range=(2, 6))
+            img = apply_defocus_blur(img, radius_range=(2, 6))
 
+    # BƠM NHIỄU THỰC TẾ VÀO (Áp dụng cho mọi task)
+    img = apply_real_world_corruptions(img)
+    
     return img
 
 
