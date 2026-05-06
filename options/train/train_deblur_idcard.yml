@@ -28,13 +28,7 @@ datasets:
     dataset_enlarge_ratio: 1
     prefetch_mode: ~
 
-  val:
-    name: IDCardDeblur_val
-    type: PairedImageDataset
-    dataroot_gt: datasets/idcard/val/sharp
-    dataroot_lq: datasets/idcard/val/blur
-    io_backend:
-      type: disk
+
 
 # ============================== Network (G) ================================ #
 network_g:
