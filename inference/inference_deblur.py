@@ -40,7 +40,7 @@ MODEL_CONFIGS = {
         num_heads=[6, 6, 6, 6, 6, 6],
     ),
     'idcard': dict(
-        img_size=256,
+        img_size=128,
         depths=[6, 6, 6, 6],
         embed_dim=96,
         num_heads=[6, 6, 6, 6],
