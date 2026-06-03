@@ -1,6 +1,19 @@
 # Đồ án Deblur/Unblur Hình Ảnh - Thị Giác Máy Tính
 > Hệ thống khôi phục ảnh mờ (Deblur) cho 3 cấp độ: Mặt người, Cảnh vật và Căn cước công dân (ID Card).
 
+---
+
+## Mục lục
+
+- [1. Giới thiệu](#1-giới-thiệu)
+- [2. Cấu trúc thư mục (Các file quan trọng)](#2-cấu-trúc-thư-mục-các-file-quan-trọng)
+- [3. Hướng dẫn sử dụng trên Google Colab](#3-hướng-dẫn-sử-dụng-trên-google-colab)
+- [4. Chuẩn bị Dataset](#4-chuẩn-bị-dataset)
+- [5. Training](#5-training)
+- [6. Inference (Chạy thử)](#6-inference-chạy-thử)
+
+---
+
 ## 1. Giới thiệu
 Dự án sử dụng kiến trúc mạng **SwinIR** (Swin Transformer for Image Restoration) để giải quyết bài toán Image Deblurring. Thay vì sử dụng một model chung cho mọi trường hợp, hệ thống sử dụng 3 mô hình chuyên biệt cho 3 domain khác nhau nhằm đạt hiệu quả tối ưu nhất.
 
