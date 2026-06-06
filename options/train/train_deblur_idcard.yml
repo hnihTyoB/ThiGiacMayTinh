@@ -4,7 +4,7 @@
 # ---------------------------------------------------------------------------- #
 name: DeblurIDCard_SwinIR_V2
 model_type: SRModel
-scale: 1  # Deblur: không thay đổi kích thước ảnh
+scale: 1 # Deblur: không thay đổi kích thước ảnh
 num_gpu: 1
 manual_seed: 42
 
@@ -20,15 +20,13 @@ datasets:
 
     gt_size: 128
     use_hflip: true
-    use_rot: false  # Không rotate ID card vì text sẽ bị lộn
+    use_rot: false # Không rotate ID card vì text sẽ bị lộn
 
     # Data loader
     num_worker_per_gpu: 2
     batch_size_per_gpu: 2
     dataset_enlarge_ratio: 1
     prefetch_mode: ~
-
-
 
 # ============================== Network (G) ================================ #
 network_g:
@@ -42,14 +40,14 @@ network_g:
   embed_dim: 96
   num_heads: [6, 6, 6, 6]
   mlp_ratio: 4
-  upsampler: ''
-  resi_connection: '1conv'
+  upsampler: ""
+  resi_connection: "1conv"
 
 # ================================= Path ==================================== #
 path:
   pretrain_network_g: ~
   strict_load_g: true
-  resume_state: /content/drive/MyDrive/DeblurModels/DeblurIDCard_SwinIR_V2/training_states/365000.state
+  resume_state: /content/drive/MyDrive/DeblurModels/DeblurIDCard_SwinIR_V2/training_states/390000.state
 
 # ============================= Training Settings =========================== #
 train:
