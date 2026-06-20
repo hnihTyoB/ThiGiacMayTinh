@@ -47,13 +47,13 @@ Dự án sử dụng kiến trúc mạng **SwinIR** (Swin Transformer for Image 
 
 Các mô hình huấn luyện sẵn đã được lưu trữ công khai và chia sẻ tại liên kết sau:
 
-- **Link Google Drive**: [DeblurModels Checkpoints](https://drive.google.com/drive/folders/1j_NIC4P0BB2DhEVLrT4FyytxeWWvsLwl?usp=sharing)
+- **Link Google Drive**: [DeblurModels Checkpoints (Zip File)](https://drive.google.com/file/d/11Ldg72RnldpAmuM8iLgEvMFuEpu-XYhj/view?usp=sharing)
   - `DeblurFace_SwinIR_V2/`: Chứa các file checkpoint của mô hình mặt người.
   - `DeblurIDCard_SwinIR_V2/`: Chứa các file checkpoint của mô hình Căn cước công dân.
 
 ### A. Chạy thử nghiệm trực tiếp trên máy cục bộ (Local)
 
-1. Truy cập vào Link Drive ở trên và tải thư mục hoặc các file mô hình `.pth` mong muốn (ví dụ `net_g_latest.pth` hoặc `net_g_500000.pth`).
+1. Truy cập vào Link Drive ở trên, tải file zip `DeblurModels.zip` và giải nén.
 2. Di chuyển các file mô hình đã tải về vào đúng thư mục tương ứng trong dự án của bạn theo cấu trúc sau:
    - Đối với Face: `experiments/DeblurFace_SwinIR_V2/models/net_g_latest.pth`
    - Đối với ID Card: `experiments/DeblurIDCard_SwinIR_V2/models/net_g_latest.pth`
